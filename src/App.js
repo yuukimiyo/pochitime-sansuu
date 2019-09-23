@@ -45,12 +45,12 @@ const NextButton = styled(AnswerButton) ({
 });
 
 const L = {
-	requestComment1: "こたえを",
-	requestComment2: "えらんでね😄",
-	correctComment1: "せいかい🎉",
-	correctComment2: "つぎはどうかな",
-	incorrectComment1: "ざんねん☔",
-	incorrectComment2: "もういちど",
+  requestComment1: "こたえを",
+  requestComment2: "えらんでね😄",
+  correctComment1: "せいかい🎉",
+  correctComment2: "つぎはどうかな",
+  incorrectComment1: "ざんねん☔",
+  incorrectComment2: "もういちど",
   checkAnswer: "こたえあわせ👀",
   nextQuestion: "つぎのもんだい"
 }
@@ -69,83 +69,83 @@ class App extends Component {
     }
   }
 
-	componentDidMount() {
-		this.renewQuestion ();
-	}
-
-	pushNumberButton = (numberObj) => {
-		let number = parseInt(numberObj.value);
-		this.setState({challengeNumberText: String(number)});
+  componentDidMount() {
+    this.renewQuestion ();
   }
 
-	renewQuestion = () => {
-		let {questionText, answer} = this.makeQuestion();
-		this.setState({questionText: questionText});
-		this.setState({challengeNumberText: "?"});
-		this.setState({commentText1: L.requestComment1});
-		this.setState({commentText2: L.requestComment2});
-		this.setState({correctNumber: answer});
-		this.setState({moveNext: false});
-	}
+  pushNumberButton = (numberObj) => {
+    let number = parseInt(numberObj.value);
+    this.setState({challengeNumberText: String(number)});
+  }
 
-	/*
-	 * 設問を(自動)生成
-	 */
+  renewQuestion = () => {
+    let {questionText, answer} = this.makeQuestion();
+    this.setState({questionText: questionText});
+    this.setState({challengeNumberText: "?"});
+    this.setState({commentText1: L.requestComment1});
+    this.setState({commentText2: L.requestComment2});
+    this.setState({correctNumber: answer});
+    this.setState({moveNext: false});
+  }
+
+  /*
+   * 設問を(自動)生成
+   */
   makeQuestion = () => {
 
-		// 同じ問題の連続を防ぐために、現在表示されている設問を取得
-		let prevQuestionText = this.state.questionText;
+    // 同じ問題の連続を防ぐために、現在表示されている設問を取得
+    let prevQuestionText = this.state.questionText;
 
-		let n = [];
-		let answer;
-		let questionText = "";
-		while(1) {
+    let n = [];
+    let answer;
+    let questionText = "";
+    while(1) {
 
-			// 設問を乱数で生成
-			n[0] = Math.floor( Math.random() * 11 ) ;
-			n[1] = Math.floor( Math.random() * 11 ) ;
+      // 設問を乱数で生成
+      n[0] = Math.floor( Math.random() * 11 ) ;
+      n[1] = Math.floor( Math.random() * 11 ) ;
 
-			answer = n[0] + n[1];
+      answer = n[0] + n[1];
 
-			// 生成された設問の答えが2桁の場合はやり直し
-			if (answer > 9) {
-				continue;
-			}
+      // 生成された設問の答えが2桁の場合はやり直し
+      if (answer > 9) {
+        continue;
+      }
 
-			questionText = "" + n[0] + " + " + n[1] + " = "
+      questionText = "" + n[0] + " + " + n[1] + " = "
 
-			// 設問が直前のものと同じ場合はやり直し
-			if (questionText === prevQuestionText) {
-				continue;
-			}
+      // 設問が直前のものと同じ場合はやり直し
+      if (questionText === prevQuestionText) {
+        continue;
+      }
 
-			break;
-		}
+      break;
+    }
 
-		return {questionText, answer}
+    return {questionText, answer}
   }
 
-	/*
-	 * 入力値と正解を比較(答え合わせ)
-	 */
-	checkAnswer = () => {
-		if (isNaN(this.state.challengeNumberText)) {
-			// 入力値が数値ではなかった場合は何もしない
-			return;
-		}
+  /*
+   * 入力値と正解を比較(答え合わせ)
+   */
+  checkAnswer = () => {
+    if (isNaN(this.state.challengeNumberText)) {
+      // 入力値が数値ではなかった場合は何もしない
+      return;
+    }
 
-		let challengeNumber = parseInt(this.state.challengeNumberText);
-		if (challengeNumber === this.state.correctNumber) {
-			// 正解の場合
-			this.setState({commentText1: L.correctComment1});
-			this.setState({commentText2: L.correctComment2});
-			this.setState({moveNext: true});
-		} else {
-			// 間違いの場合
-			this.setState({commentText1: L.incorrectComment1});
-			this.setState({commentText2: L.incorrectComment2});
-		}
-	}
+    let challengeNumber = parseInt(this.state.challengeNumberText);
+    if (challengeNumber === this.state.correctNumber) {
+      // 正解の場合
+      this.setState({commentText1: L.correctComment1});
+      this.setState({commentText2: L.correctComment2});
+      this.setState({moveNext: true});
+    } else {
+      // 間違いの場合
+      this.setState({commentText1: L.incorrectComment1});
+      this.setState({commentText2: L.incorrectComment2});
+    }
+  }
 
   render() {
     return (
@@ -154,28 +154,27 @@ class App extends Component {
         height: '100vh', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'
       }} >
         <CommentText>
-					{this.state.commentText1}<br />
-					{this.state.commentText2}
-				</CommentText>
+          {this.state.commentText1}<br />
+          {this.state.commentText2}
+        </CommentText>
         <QuestionText>
-					{this.state.questionText}{this.state.challengeNumberText}
-				</QuestionText>
-				<Grid container>
-					<Grid container spacing={1} justify="center" style={{marginBottom: 20}}>
-						{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(value => (
-							<Grid key={value} item>
-								<NumberButton onClick={()=>this.pushNumberButton({value})}>{value}</NumberButton>
-							</Grid>
-						))}
-					</Grid>
-					<Grid container justify="center">
-						{!this.state.moveNext ?
-							<AnswerButton onClick={this.checkAnswer}>{L.checkAnswer}</AnswerButton>
-							:<NextButton onClick={this.renewQuestion}>{L.nextQuestion}</NextButton>
-						}
-					</Grid>
-				</Grid>
-
+          {this.state.questionText}{this.state.challengeNumberText}
+        </QuestionText>
+        <Grid container>
+          <Grid container spacing={1} justify="center" style={{marginBottom: 20}}>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(value => (
+              <Grid key={value} item>
+                <NumberButton onClick={()=>this.pushNumberButton({value})}>{value}</NumberButton>
+              </Grid>
+            ))}
+          </Grid>
+          <Grid container justify="center">
+            {!this.state.moveNext ?
+              <AnswerButton onClick={this.checkAnswer}>{L.checkAnswer}</AnswerButton>
+              :<NextButton onClick={this.renewQuestion}>{L.nextQuestion}</NextButton>
+            }
+          </Grid>
+        </Grid>
       </div>
     );
   }
