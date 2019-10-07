@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import 'typeface-roboto';
-import { styled } from '@material-ui/styles';
+import styled from 'styled-components';
+import { styled as styledMui } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-const CommentText = styled(Typography) ({
+// import styled from 'styled-components';
+
+const CommentText = styledMui(Typography) ({
   fontSize: 42,
   margin: '0',
   padding: '0',
@@ -14,11 +18,11 @@ const CommentText = styled(Typography) ({
   textAlign: 'left'
 });
 
-const QuestionText = styled(Typography) ({
+const QuestionText = styledMui(Typography) ({
   fontSize: 64
 });
 
-const NumberButton = styled(Fab) ({
+const NumberButton = styledMui(Fab) ({
   background: 'linear-gradient(45deg, #66a6ff 0%, #89f7fe 100%);',
 	fontSize: 24,
   border: 0,
@@ -28,7 +32,7 @@ const NumberButton = styled(Fab) ({
   padding: '5px 5px'
 });
 
-const AnswerButton = styled(Button) ({
+const AnswerButton = styledMui(Button) ({
   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   fontSize: 32,
   border: 0,
@@ -38,12 +42,12 @@ const AnswerButton = styled(Button) ({
   padding: '10px 30px'
 });
 
-const NextButton = styled(AnswerButton) ({
+const NextButton = styledMui(AnswerButton) ({
   background: 'linear-gradient(45deg, #8fd3f4 30%, #84fab0 90%)',
   boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
 });
 
-const DeleteButton = styled(AnswerButton) ({
+const DeleteButton = styledMui(AnswerButton) ({
   fontSize: 22,
   background: 'linear-gradient(45deg, #8fd3f4 30%, #84fab0 90%)',
   boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
@@ -51,18 +55,33 @@ const DeleteButton = styled(AnswerButton) ({
   padding: '4px 30px'
 });
 
-const DeleteButtonDisabled = styled(DeleteButton) ({
+const DeleteButtonDisabled = styledMui(DeleteButton) ({
   background: 'linear-gradient(45deg, #eee 50%, #eee 60%)',
   boxShadow: '0 3px 5px 2px rgba(128, 128, 128, .3)',
 });
 
+const BackToHomeButton = styledMui(AnswerButton) ({
+  fontSize: 22,
+  background: 'linear-gradient(45deg, #8fd3f4 30%, #84fab0 90%)',
+  boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
+  marginTop: '10px',
+  marginLeft: '10px',
+  padding: '4px 5px'
+});
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`
+
 const L = {
+//  requestComment1: "こたえは？😄",
   requestComment1: "こたえは？😄",
   correctComment1: "せいかい🎉",
   incorrectComment1: "ざんねん☔",
   checkAnswer: "こたえあわせ👀",
   nextQuestion: "つぎのもんだい",
-  deleteInput: "やりなおし✂"
+  deleteInput: "やりなおし✂",
+  backToHome: "🏠"
 }
 
 class PageSubEasy extends Component {
@@ -80,6 +99,7 @@ class PageSubEasy extends Component {
 
   componentDidMount() {
     this.renewQuestion ();
+    // console.log(this.props.route.user);
   }
 
   pushNumberButton = (numberObj) => {
@@ -123,7 +143,11 @@ class PageSubEasy extends Component {
     while(1) {
 
       // 設問を乱数で生成
-      n[0] = Math.ceil( Math.random() * 9 ) ;
+      if (this.props.grade === "all") {
+        n[0] = Math.ceil( Math.random() * 9 ) ;
+      } else {
+        n[0] = parseInt(this.props.grade);
+      }
       n[1] = Math.ceil( Math.random() * 9 ) ;
 
       answer = n[0] * n[1];
@@ -175,17 +199,30 @@ class PageSubEasy extends Component {
         background: 'linear-gradient(to right bottom, #ffefba, #ffffff)',
         height: '100vh', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'
       }} >
-        <CommentText>
-          {this.state.commentText1}
-        </CommentText>
-        <QuestionText>
-          {this.state.questionText}{this.state.challengeNumberText}
-        </QuestionText>
         <Grid container>
+          <Grid container justify="flex-start">
+            <StyledLink to='/'>
+              <BackToHomeButton onClick={this.resetInput}>
+                {L.backToHome}
+              </BackToHomeButton>
+            </StyledLink>
+          </Grid>
+          <Grid container justify="center">
+            <CommentText>
+              {this.state.commentText1}
+            </CommentText>
+          </Grid>
+          <Grid container justify="center">
+            <QuestionText>
+              {this.state.questionText}{this.state.challengeNumberText}
+            </QuestionText>
+          </Grid>
           <Grid container spacing={1} justify="center" style={{marginBottom: 20}}>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(value => (
               <Grid key={value} item>
-                <NumberButton onClick={()=>this.pushNumberButton({value})}>{value}</NumberButton>
+                <NumberButton onClick={()=>this.pushNumberButton({value})}>
+                  {value}
+                </NumberButton>
               </Grid>
             ))}
           </Grid>
